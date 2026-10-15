@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>C ♡ N — Para ti</title>
+<style>
+:root{--brown:#79513d;--brown2:#9b6d52;--cream:#fffaf6;--ink:#59453a;--pink:#f2d9d4}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#fff;color:var(--ink);font-family:Georgia,'Times New Roman',serif;overflow-x:hidden}
+button{font:inherit}
+.screen{min-height:100svh;display:flex;align-items:center;justify-content:center;padding:28px 20px;position:relative}
+#intro{background:#fff;flex-direction:column;text-align:center;gap:18px;transition:opacity .7s ease}
+.kicker{font:11px/1.5 Arial,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#9b877b}
+.heart-button{width:190px;height:190px;border:0;background:transparent;cursor:pointer;position:relative;display:grid;place-items:center;animation:softPulse 2.2s infinite; -webkit-tap-highlight-color:transparent}
+.heart-shape{font-size:145px;line-height:1;color:var(--brown);filter:drop-shadow(0 8px 12px #79513d18);transition:transform .7s cubic-bezier(.2,.8,.2,1),opacity .5s}
+.initials{position:absolute;color:#fff7f0;font-size:27px;letter-spacing:.04em;left:50%;top:51%;transform:translate(-50%,-50%);white-space:nowrap}
+#intro h1{font-size:clamp(28px,7vw,42px);font-weight:normal;color:var(--brown);margin:0}
+.hint{font:13px/1.6 Arial,sans-serif;color:#9a8c83;margin:0}
+#intro.opening .heart-shape{transform:scale(1.8) rotate(-12deg);opacity:0}
+#intro.opening .initials{opacity:0;transition:opacity .25s}
+#intro.opening{opacity:0;pointer-events:none}
+#story{display:none;background:linear-gradient(180deg,#fffaf7,#f7ebe5 55%,#fffaf7);text-align:center;flex-direction:column;gap:22px;padding-top:60px;padding-bottom:70px}
+#story.show{display:flex;animation:fadeIn 1s both}
+.big-love{font-size:clamp(42px,10vw,68px);color:var(--brown);font-weight:normal;margin:0;letter-spacing:.03em;animation:rise .8s both}
+.subtitle{font:14px/1.8 Arial,sans-serif;color:#8c7466;margin:0;max-width:340px}
+.card{width:min(100%,520px);background:#fffdfb;border:1px solid #eadbd1;border-radius:20px;padding:26px 23px;box-shadow:0 12px 35px #6d44320c;text-align:left}
+.card h2{font-size:25px;font-weight:normal;color:var(--brown);text-align:center;margin:0 0 18px}
+.letter{font-size:17px;line-height:1.9;white-space:pre-line}
+.signature{text-align:right;color:var(--brown);font-style:italic;margin-top:18px;font-size:17px}
+.counter-card{text-align:center;background:#fff;border-radius:20px;border:1px solid #eadbd1;padding:24px 15px;width:min(100%,520px)}
+.counter-card h2{font-weight:normal;color:var(--brown);font-size:24px;margin:0 0 8px}
+.start-date{font:12px Arial,sans-serif;letter-spacing:.12em;color:#9b877b;margin:0 0 20px}
+.counter{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.unit{background:#fbf4ef;border-radius:12px;padding:14px 4px}
+.num{font-size:clamp(25px,7vw,34px);color:var(--brown);display:block}
+.label{font:10px Arial,sans-serif;letter-spacing:.1em;color:#9b877b}
+.footer-note{font:12px/1.7 Arial,sans-serif;color:#9b877b;max-width:330px}
+.more-button{border:1px solid #b68d76;background:#fffaf6;color:var(--brown);padding:12px 20px;border-radius:30px;cursor:pointer}
+.hidden-extra{display:none;width:min(100%,520px);background:#fffdfb;border:1px solid #eadbd1;border-radius:18px;padding:24px;font-size:18px;line-height:1.8}
+.hidden-extra.show{display:block;animation:fadeIn .6s}
+.heart-particle{position:fixed;z-index:5;pointer-events:none;bottom:42%;left:50%;font-size:22px;animation:burst 2.6s ease-out forwards}
+.float-heart{position:fixed;bottom:-40px;z-index:0;pointer-events:none;animation:floatUp linear forwards;opacity:.8}
+@keyframes softPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+@keyframes rise{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes burst{0%{transform:translate(-50%,0) scale(.35) rotate(0);opacity:0}12%{opacity:1}100%{transform:translate(calc(-50% + var(--dx)),var(--dy)) scale(var(--scale)) rotate(var(--rot));opacity:0}}
+@keyframes floatUp{from{transform:translateY(0) rotate(0);opacity:0}15%{opacity:.7}to{transform:translateY(-115vh) rotate(35deg);opacity:0}}
+@media(max-width:380px){.heart-button{width:160px;height:160px}.heart-shape{font-size:125px}.counter{gap:5px}.unit{padding:12px 2px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+
+.heart-button{width:220px;height:205px;animation:softPulse 2.8s infinite;isolation:isolate}
+.heart-svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 3px 3px #79513d0a)}
+.heart-left,.heart-right{transform-box:fill-box;transform-origin:center;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.initials{font-family:Georgia,serif;font-size:25px;letter-spacing:.03em;top:49%;text-shadow:0 1px 2px #59372535;transition:opacity .35s,transform .6s}
+.initials span{font-size:.9em;color:#f1d9c8}
+.heart-sparkle{position:absolute;color:#b18b70;font-size:21px;animation:twinkle 2.2s ease-in-out infinite}
+.sparkle-one{top:20%;right:9%}.sparkle-two{bottom:22%;left:8%;animation-delay:.8s}
+#intro.opening .heart-left{transform:translateX(-27px) rotate(-13deg)}
+#intro.opening .heart-right{transform:translateX(27px) rotate(13deg)}
+#intro.opening .heart-seam{opacity:0}
+#intro.opening .initials{transform:translate(-50%,-50%) scale(.7);opacity:0}
+#intro.opening .heart-sparkle{opacity:0}
+.extra-section{width:min(100%,520px);background:#fffdfb;border:1px solid #eadbd1;border-radius:20px;padding:24px 21px;box-shadow:0 12px 35px #6d44320a}
+.extra-section h2{font-size:24px;font-weight:normal;color:var(--brown);text-align:center;margin:0 0 12px}
+.rose-art{display:block;width:116px;height:130px;margin:8px auto 12px;animation:roseBloom 1.4s ease-out both;filter:drop-shadow(0 6px 5px #00000010)}
+.rose-caption{text-align:center;font:13px/1.7 Arial,sans-serif;color:#8c7466;margin:0}
+.message-hearts{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:18px 0 4px}
+.message-heart{border:0;background:#f7eee8;border-radius:50%;width:49px;height:49px;font-size:23px;color:var(--brown);cursor:pointer;transition:transform .2s,background .2s}
+.message-heart:active{transform:scale(.9)}
+#messageReveal{min-height:48px;text-align:center;font-size:17px;line-height:1.7;color:var(--brown);margin:14px 0 0}
+.promise-list{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:12px}
+.promise-list li{padding:12px 13px;background:#fbf4ef;border-radius:12px;font-size:15px;line-height:1.6}
+.promise-list li span{color:#9b6d52;margin-right:8px}
+.song-card{text-align:center}
+.song-label{font:11px Arial,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:#9b877b}
+.song-title{font-size:22px;color:var(--brown);margin:9px 0 5px}
+.song-artist{font:14px Arial,sans-serif;color:#8c7466;margin:0 0 18px}
+.song-button{display:inline-block;text-decoration:none;border:1px solid #b68d76;background:#fffaf6;color:var(--brown);padding:12px 19px;border-radius:30px;font:14px Arial,sans-serif}
+.photo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:16px}
+.photo-slot{min-height:120px;position:relative;border:1px dashed #cdb6a6;background:#fbf4ef;border-radius:13px;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:7px;color:#9b877b;font:12px/1.5 Arial,sans-serif}
+.photo-slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.photo-slot input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.photo-note{font:12px/1.7 Arial,sans-serif;color:#9b877b;text-align:center;margin:12px 0 0}
+#story.show .extra-section{animation:fadeIn .8s both}
+@keyframes twinkle{0%,100%{opacity:.45;transform:scale(.85) rotate(0)}50%{opacity:1;transform:scale(1.15) rotate(18deg)}}
+@keyframes roseBloom{from{opacity:0;transform:scale(.55) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@media(max-width:380px){.heart-button{width:185px;height:175px}.initials{font-size:23px}.photo-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.photo-slot{min-height:95px;font-size:10px}}
+
+</style>
+</head>
+<body>
+<section id="intro" class="screen" aria-label="Sorpresa">
+  <p class="kicker">Una pequeña sorpresa para ti</p>
+  <button class="heart-button" id="openHeart" aria-label="Abrir el corazón">
+    <svg class="heart-svg" viewBox="0 0 200 180" aria-hidden="true">
+      <defs>
+        <linearGradient id="heartBrown" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#a77b5d"/>
+          <stop offset="48%" stop-color="#80543e"/>
+          <stop offset="100%" stop-color="#593725"/>
+        </linearGradient>
+        <linearGradient id="heartShine" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#fff5e9" stop-opacity=".65"/>
+          <stop offset="100%" stop-color="#fff5e9" stop-opacity="0"/>
+        </linearGradient>
+        <filter id="heartShadow" x="-30%" y="-30%" width="160%" height="170%">
+          <feDropShadow dx="0" dy="9" stdDeviation="7" flood-color="#593725" flood-opacity=".20"/>
+        </filter>
+      </defs>
+      <g class="heart-left" filter="url(#heartShadow)">
+        <path d="M100 157 C86 145 22 102 18 61 C14 26 52 12 77 32 C88 41 95 51 100 60 Z" fill="url(#heartBrown)"/>
+        <path d="M92 53 C77 25 45 23 32 44 C25 57 30 72 37 83 C40 60 54 43 72 44 C81 44 87 48 92 53Z" fill="url(#heartShine)" opacity=".72"/>
+      </g>
+      <g class="heart-right" filter="url(#heartShadow)">
+        <path d="M100 157 C114 145 178 102 182 61 C186 26 148 12 123 32 C112 41 105 51 100 60 Z" fill="url(#heartBrown)"/>
+        <path d="M108 53 C123 25 155 23 168 44 C175 57 170 72 163 83 C160 60 146 43 128 44 C119 44 113 48 108 53Z" fill="url(#heartShine)" opacity=".72"/>
+      </g>
+      <path class="heart-seam" d="M100 62 C98 91 103 124 100 153" fill="none" stroke="#f5e7d9" stroke-opacity=".45" stroke-width="1.6" stroke-dasharray="3 5"/>
+    </svg>
+    <span class="initials">C <span>♡</span> N</span>
+    <span class="heart-sparkle sparkle-one">✦</span>
+    <span class="heart-sparkle sparkle-two">✧</span>
+  </button>
+  <h1>Para alguien especial</h1>
+  <p class="hint">Toca el corazón para descubrirlo 🤎</p>
+</section>
+
+<section id="story" class="screen">
+  <p class="kicker">Hecho con todo mi cariño</p>
+  <h1 class="big-love">TE AMO <span aria-hidden="true">🤎</span></h1>
+  <p class="subtitle">De todas las cosas bonitas que pueden pasar, me alegra que nuestras historias se hayan encontrado.</p>
+
+  <article class="card">
+    <h2>Una carta para ti 💌</h2>
+    <div class="letter">Mi niña,
+
+Quizás llevamos poquito tiempo, pero eso no hace que este momento sea menos especial para mí. Quería regalarte algo diferente, algo que pudieras abrir con un toque y que te recordara que hay alguien que sonríe al pensar en ti.
+
+No puedo prometerte que todos los días serán perfectos, pero sí quiero que lo nuestro se construya con cariño, sinceridad, respeto y pequeños detalles. Quiero conocerte cada día un poquito más, compartir risas contigo y crear recuerdos que algún día podamos mirar con una sonrisa.
+
+Esta página es pequeñita, pero la intención detrás de ella es enorme: recordarte que eres especial para mí y que me hace ilusión todo lo que todavía nos queda por vivir.
+
+Feliz comienzo de nuestra historia. Que este sea el primero de muchos capítulos bonitos. 🤎</div>
+    <p class="signature">Con cariño, C ♡ N</p>
+  </article>
+
+
+  <section class="extra-section">
+    <h2>Una rosa para nuestra historia</h2>
+    <svg class="rose-art" viewBox="0 0 120 140" role="img" aria-label="Rosa negra">
+      <defs>
+        <linearGradient id="blackRose" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#51464a"/><stop offset="55%" stop-color="#171518"/><stop offset="100%" stop-color="#050506"/>
+        </linearGradient>
+        <linearGradient id="stem" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#344438"/><stop offset="100%" stop-color="#18271d"/>
+        </linearGradient>
+      </defs>
+      <path d="M60 66 C59 90 61 111 57 132" fill="none" stroke="url(#stem)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M59 100 C35 78 25 95 51 108 C56 109 59 106 59 100Z" fill="#344438"/>
+      <path d="M60 116 C82 91 98 104 67 123 C63 124 61 121 60 116Z" fill="#26382b"/>
+      <path d="M60 74 C37 68 27 49 42 35 C43 16 67 13 78 28 C97 34 98 57 78 69 C71 74 66 75 60 74Z" fill="url(#blackRose)"/>
+      <path d="M60 69 C43 61 43 43 56 35 C65 29 79 37 79 48 C79 59 69 65 60 69Z" fill="#292529"/>
+      <path d="M59 64 C50 55 54 43 64 42 C72 42 76 51 69 59Z" fill="#0b0a0c"/>
+      <path d="M43 37 C32 48 39 62 52 67 C43 57 44 49 51 42Z" fill="#5a5054" opacity=".5"/>
+      <path d="M76 31 C91 39 89 54 78 63 C85 50 81 41 76 31Z" fill="#6b6065" opacity=".35"/>
+    </svg>
+    <p class="rose-caption">Una rosa negra, distinta y especial, como los detalles que hacen única nuestra historia. Que siga floreciendo con cariño, respeto y sinceridad.</p>
+  </section>
+
+  <section class="extra-section">
+    <h2>Pequeños corazones, pequeños mensajes 🤎</h2>
+    <p class="subtitle" style="margin:0 auto;text-align:center">Toca cada corazón para descubrir un mensajito.</p>
+    <div class="message-hearts">
+      <button class="message-heart" data-message="Eres mi persona favorita para compartir las pequeñas cosas.">♡</button>
+      <button class="message-heart" data-message="Qué bonito que nuestras historias se hayan encontrado.">♥</button>
+      <button class="message-heart" data-message="Quiero conocerte cada día un poquito más.">🤎</button>
+      <button class="message-heart" data-message="Gracias por hacer especial este comienzo.">♡</button>
+    </div>
+    <p id="messageReveal" aria-live="polite">Elige un corazón…</p>
+  </section>
+
+  <section class="extra-section">
+    <h2>Tres promesas para nosotros</h2>
+    <ul class="promise-list">
+      <li><span>♡</span> Escucharte con atención y hablarte con sinceridad.</li>
+      <li><span>♡</span> Respetarte, cuidar tus sentimientos y respetar tu espacio.</li>
+      <li><span>♡</span> Construir lo nuestro con paciencia, cariño y detalles reales.</li>
+    </ul>
+  </section>
+
+  <section class="extra-section song-card">
+    <p class="song-label">Una canción para acompañar este regalo</p>
+    <h2 class="song-title">Call Me Little Sunshine</h2>
+    <p class="song-artist">Ghost</p>
+    <a class="song-button" href="https://www.youtube.com/results?search_query=Ghost+Call+Me+Little+Sunshine+official" target="_blank" rel="noopener noreferrer">▶ Escuchar la canción</a>
+    <p class="photo-note">Se abrirá YouTube para que puedas reproducirla. Así no hace falta incluir audio protegido dentro de la página.</p>
+  </section>
+
+  <section class="extra-section">
+    <h2>Nuestro pequeño mundo 📷</h2>
+    <p class="subtitle" style="margin:0 auto;text-align:center">Puedes añadir fotos desde tu teléfono o computadora. Se mostrarán en esta página mientras la tengas abierta.</p>
+    <div class="photo-grid">
+      <label class="photo-slot">＋<br>Un recuerdo<input type="file" accept="image/*" aria-label="Añadir primer recuerdo" data-photo="0"></label>
+      <label class="photo-slot">＋<br>Una sonrisa<input type="file" accept="image/*" aria-label="Añadir segunda foto" data-photo="1"></label>
+      <label class="photo-slot">＋<br>Un momento<input type="file" accept="image/*" aria-label="Añadir tercera foto" data-photo="2"></label>
+    </div>
+    <p class="photo-note">Las fotos se cargan localmente en tu navegador; no se suben a ningún servidor.</p>
+  </section>
+
+  <section class="counter-card" aria-live="polite">
+    <h2>Nuestra historia comenzó</h2>
+    <p class="start-date">12 · OCTUBRE · 2026</p>
+    <div class="counter">
+      <div class="unit"><span class="num" id="days">02</span><span class="label">DÍAS</span></div>
+      <div class="unit"><span class="num" id="hours">00</span><span class="label">HORAS</span></div>
+      <div class="unit"><span class="num" id="minutes">00</span><span class="label">MINUTOS</span></div>
+      <div class="unit"><span class="num" id="seconds">00</span><span class="label">SEGUNDOS</span></div>
+    </div>
+  </section>
+
+  <button class="more-button" id="surpriseButton">Una última sorpresita ✨</button>
+  <div class="hidden-extra" id="extra">Si pudiera guardar un instante en un lugar seguro, guardaría todos esos pequeños momentos en los que me haces sonreír. Y si esta historia apenas empieza, qué bonito es tener tanto por descubrir contigo. Y recuerda: este es solo el primer detalle de muchos que espero regalarte. 🤎</div>
+  <p class="footer-note">No es una página enorme, pero está hecha para recordarte algo sencillo: me alegra que seas parte de mi vida.</p>
+</section>
+<script>
+const intro=document.getElementById('intro');
+const story=document.getElementById('story');
+const heartButton=document.getElementById('openHeart');
+let opened=false;
+function burstHearts(){
+  const symbols=['🤎','♡','♥','🤍','💕'];
+  for(let i=0;i<46;i++){
+    const h=document.createElement('span');
+    h.className='heart-particle';
+    h.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    h.style.setProperty('--dx',(Math.random()*window.innerWidth-window.innerWidth/2)+'px');
+    h.style.setProperty('--dy',(-100-Math.random()*window.innerHeight*.72)+'px');
+    h.style.setProperty('--scale',(0.65+Math.random()*1.15));
+    h.style.setProperty('--rot',(-70+Math.random()*140)+'deg');
+    h.style.animationDelay=(Math.random()*.45)+'s';
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),3300);
+  }
+}
+function floatingHearts(){
+  for(let i=0;i<12;i++){
+    setTimeout(()=>{
+      const h=document.createElement('span');
+      h.className='float-heart';
+      h.textContent=['🤎','♡','♥'][Math.floor(Math.random()*3)];
+      h.style.left=(Math.random()*96)+'vw';
+      h.style.fontSize=(15+Math.random()*19)+'px';
+      h.style.animationDuration=(7+Math.random()*7)+'s';
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(),15000);
+    },i*450);
+  }
+}
+heartButton.addEventListener('click',()=>{
+  if(opened)return; opened=true;
+  intro.classList.add('opening');
+  burstHearts();
+  setTimeout(()=>{
+    intro.style.display='none';
+    story.classList.add('show');
+    floatingHearts();
+    setInterval(floatingHearts,9000);
+    story.scrollIntoView({behavior:'smooth'});
+  },650);
+});
+document.getElementById('surpriseButton').addEventListener('click',()=>{
+  const extra=document.getElementById('extra');
+  extra.classList.toggle('show');
+  document.getElementById('surpriseButton').textContent=extra.classList.contains('show')?'Cerrar sorpresita 🤎':'Una última sorpresita ✨';
+});
+function updateCounter(){
+  // The relationship start date is treated as midnight on October 12, 2026.
+  const start=new Date(2026,9,12,0,0,0);
+  const now=new Date();
+  let diff=Math.max(0,now-start);
+  const sec=Math.floor(diff/1000);
+  const days=Math.floor(sec/86400);
+  const hours=Math.floor((sec%86400)/3600);
+  const mins=Math.floor((sec%3600)/60);
+  const seconds=sec%60;
+  document.getElementById('days').textContent=String(days).padStart(2,'0');
+  document.getElementById('hours').textContent=String(hours).padStart(2,'0');
+  document.getElementById('minutes').textContent=String(mins).padStart(2,'0');
+  document.getElementById('seconds').textContent=String(seconds).padStart(2,'0');
+}
+
+document.querySelectorAll('.message-heart').forEach(button=>{
+  button.addEventListener('click',()=>{
+    document.getElementById('messageReveal').textContent=button.dataset.message;
+    document.querySelectorAll('.message-heart').forEach(b=>b.style.background='#f7eee8');
+    button.style.background='#ead5c8';
+  });
+});
+document.querySelectorAll('input[data-photo]').forEach(input=>{
+  input.addEventListener('change',()=>{
+    const file=input.files && input.files[0];
+    if(!file)return;
+    if(!file.type.startsWith('image/'))return;
+    const label=input.closest('.photo-slot');
+    let img=label.querySelector('img');
+    if(!img){img=document.createElement('img');label.appendChild(img);}
+    const reader=new FileReader();
+    reader.onload=()=>{img.src=reader.result;};
+    reader.readAsDataURL(file);
+  });
+});
+
+updateCounter();setInterval(updateCounter,1000);
+</script>
+</body>
+</html>
